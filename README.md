@@ -109,6 +109,45 @@ troubleshooting:
 - xdisplay for docker maybe tricky and you may face the `_tkinter.TclError: couldn't connect to display` error. As it is based on network communication, yo may need to include your local ip address: e.g. `export DISPLAY:192.168.100.5:0.0`, on windows you may look for tutorial on xming and install additional fonts.
 - the apt commands during the build sometimes fails due to kali.org network error (`Failed to fetch http://http.kali.org/`) just retry the build
 
+## Docker on MAC OS Display 
+#First Download XQuartz
+#Then open up a XQuartz terminal and show the display that window uses by typing in the following :
+
+echo $DISPLAY
+
+#RESULTS MAY VARY
+
+/private/tmp/com.apple.launchd.YxQ2dUgvhm/org.xquartz:0
+
+
+
+#Then on your regular Mac terminal
+
+
+# Set your Mac IP address
+IP=$(/usr/sbin/ipconfig getifaddr en0)
+echo $IP
+
+#Results may vary
+192.168.1.9
+
+
+
+#Then Allow connections from Mac to XQuartz
+/opt/X11/bin/xhost + "$IP"
+
+#results may Vary
+192.168.1.9 being added to access control list
+
+# Run container
+#EXPORT DISPLAY ON REGULAR TERMINAL 
+
+export DISPLAY=/private/tmp/com.apple.launchd.YxQ2dUgvhm/org.xquartz:0
+
+echo $DISPLAY
+
+docker run -it -e DISPLAY="${IP}:0" -v /tmp/.X11-unix:/tmp/.X11-unix --network=host metascan
+
 ## Contributing
 
 We welcome contributions to enhance and improve this project. 
